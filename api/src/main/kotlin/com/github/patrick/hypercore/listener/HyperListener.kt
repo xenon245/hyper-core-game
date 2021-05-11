@@ -20,28 +20,16 @@
 
 package com.github.patrick.hypercore.listener
 
-import com.github.noonmaru.tap.packet.Packet
 import com.github.patrick.hypercore.Hyper
-import com.github.patrick.hypercore.Hyper.ENTITY
 import com.github.patrick.hypercore.block.HyperTree
-import com.github.patrick.hypercore.entity.HyperSkeleton
-import com.github.patrick.hypercore.plugin.HyperCorePlugin.Companion.INSTANCE
-import com.github.patrick.hypercore.task.TreeCancelTask
-import org.bukkit.Bukkit
 import org.bukkit.Location
-import org.bukkit.craftbukkit.v1_12_R1.CraftWorld
-import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.block.BlockBreakEvent
 import org.bukkit.event.entity.CreatureSpawnEvent
-import org.bukkit.event.entity.EntitySpawnEvent
 import org.bukkit.event.entity.EntityTargetLivingEntityEvent
 import org.bukkit.event.entity.PlayerDeathEvent
-import org.bukkit.event.player.PlayerRespawnEvent
 import org.bukkit.inventory.EquipmentSlot
-import kotlin.math.log
-import kotlin.random.Random
 
 class HyperListener : Listener {
     @EventHandler
@@ -59,8 +47,17 @@ class HyperListener : Listener {
 
     @EventHandler
     fun onHyperPlayerRespawn(event: PlayerDeathEvent) {
-        Hyper.HYPER_TREE_BUKKIT_TASKS[event.entity]?.forEach { task ->
-            task.cancel()
+        with(Hyper) {
+            when(val player = event.entity) {
+                HYPER_BORDER_PLAYER -> {
+                    HYPER_BORDER_PLAYER = null
+                    HYPER_BORDER_TASK = null
+                    player.world.worldBorder.run {
+                        setCenter(0.0, 0.0)
+                        size = 6000000.0
+                    }
+                }
+            }
         }
     }
 

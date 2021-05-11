@@ -33,6 +33,7 @@ class HyperTree(init: Block, player: Player) {
                 setPositionAndRotation(init.x + 0.5, init.y + 0.5, init.z + 0.5, 0F, 0F)
                 isInvisible = true
                 isMarker = true
+                setEquipment(EquipmentSlot.HEAD, Tap.ITEM.fromItemStack(ItemStack(init.type)))
             }
             with(Packet.ENTITY) {
                 entity.bukkitEntity.apply {
@@ -62,6 +63,7 @@ class HyperTree(init: Block, player: Player) {
                                 setPositionAndRotation(it.x + 0.5, it.y + 0.5, it.z + 0.5, 0F, 0F)
                                 isInvisible = true
                                 isMarker = true
+                                setEquipment(EquipmentSlot.HEAD, Tap.ITEM.fromItemStack(ItemStack(it.type)))
                             }
                             Packet.ENTITY.spawnMob(entity.bukkitEntity).sendAll()
                             Packet.ENTITY.equipment(entity.id, EquipmentSlot.HEAD, Tap.ITEM.fromItemStack(ItemStack(it.type))).sendAll()
